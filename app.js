@@ -1,4 +1,4 @@
-var teamList = [
+var teamList =
     {
         "teams": [
           {
@@ -287,11 +287,11 @@ var teamList = [
               }
             }
           },
-          {
-            "name": "England",
-            "code": "ENG",
-            "continent": "Europe"
-          },
+          // {
+          //   "name": "England",
+          //   "code": "ENG",
+          //   "continent": "Europe"
+          // },
           {
             "name": "Iran",
             "code": "IRN",
@@ -410,34 +410,30 @@ var teamList = [
             }
           }
         ]
-      }
-];
+      };
 
 var divOfList = document.getElementById("teamList");
 
-for (var key in teamList) {
-console.log(teamList[key].teams)
+for (var key1 in teamList) {
 
-for(var i in teamList[key].teams) {
-
-    console.log(teamList[key].teams[i].assoc.key)
+for(var key2 in teamList[key1]) {
     // creating main div
     var div = document.createElement('div')
     div.setAttribute("class", "list")
-    div.setAttribute("key", teamList[key].teams[i].assoc.key)
+    div.setAttribute("key", teamList[key1][key2].assoc.key)
     // creating user id in a parent
     var divId = document.createElement('div')
     divId.setAttribute("class", 'left-box')
     var spanId = document.createElement('span')
-    var spanIdText = document.createTextNode(++i + ":")
+    var spanIdText = document.createTextNode(++key2 + ":")// ++ is to assign id from 1to31 not 0to31
     // creating user name in a parent
     var divName = document.createElement('div')
     divName.setAttribute("class", 'center-box')
     var spanName = document.createElement('span')
-    var spanNameText = document.createTextNode(teamList[key].teams[i].name)
+    var spanNameText = document.createTextNode(teamList[key1][--key2].name)// (--)is due to ++ in above line
     //creating a button which is getting detail of sepecific data
     var btn = document.createElement('button')
-    btn.setAttribute("onClick", `details(${teamList[key].teams[i].assoc.key})`)
+    btn.setAttribute("onClick", `details(${key2})`)
     var btnText = document.createTextNode('Details')
     // creating id in a DOM list
     spanId.appendChild(spanIdText)
@@ -470,11 +466,69 @@ closeHead.appendChild(close_btn);
 
 function details(el){
     getDiv.style.display = "flex";
-    console.log(el)
-    for (var x in teamList){
-        if (teamList[x].assoc.key === el){
-            alert(teamList[x].assoc.key)
 
+    var dataBody = document.createElement("div");
+    dataBody.setAttribute("id", "data-body");
+    detailsDiv.appendChild(dataBody); 
+
+    for(var key3 in teamList[key1][el]) {
+
+      if(typeof(teamList[key1][el][key3]) === "object") {
+        var pDiv = document.createElement("div");
+          var h2 = document.createElement("h4");
+          h2.appendChild(document.createTextNode(key3.toUpperCase()+":"));
+          h2.setAttribute("class", "first-h");
+          pDiv.appendChild(h2);
+        for(var key4 in teamList[key1][el][key3]) {
+          
+          if(typeof(teamList[key1][el][key3][key4]) === "object") {
+            var para = document.createElement("p");
+            var span1 = document.createElement("span");
+            span1.setAttribute("class", "sec-h");
+            span1.appendChild(document.createTextNode(key4+":"));
+            para.appendChild(span1)
+            pDiv.appendChild(para);
+              dataBody.appendChild(pDiv);
+            var ul = document.createElement("ul");
+            para.appendChild(ul);
+
+          for(var key5 in teamList[key1][el][key3][key4]){
+            var li = document.createElement("li");
+            li.appendChild(document.createTextNode(key5+": "+teamList[key1][el][key3][key4][key5]))
+            ul.appendChild(li);
+          }
+          }else{
+            var para = document.createElement("p");
+            var span1 = document.createElement("span");
+            span1.setAttribute("class", "sec-h");
+            span1.appendChild(document.createTextNode(key4+": "));
+            para.appendChild(span1)
+            para.appendChild(document.createTextNode(teamList[key1][el][key3][key4]));
+            pDiv.appendChild(para);
+            dataBody.appendChild(pDiv);
+          }
         }
+      }
+      else{
+        var pDiv = document.createElement("div");
+        var h2 = document.createElement("h4");
+        h2.setAttribute("class", "first-h");
+        h2.appendChild(document.createTextNode(key3.toUpperCase()+":"));
+        pDiv.appendChild(h2);
+        var para = document.createElement("p");
+        para.appendChild(document.createTextNode(teamList[key1][el][key3]));
+        pDiv.appendChild(para);
+        dataBody.appendChild(pDiv)
+      }
+    }
+}
+
+function closeTab(){
+  getDiv.style.display = "none";
+
+  var a = document.getElementById("detail-box");
+    var childToRemove = a.childNodes;
+    for(var e=1; e<childToRemove.length; e++) {    //remove previous data of modal, if it exist
+      a.removeChild(childToRemove[e]);
     }
 }
